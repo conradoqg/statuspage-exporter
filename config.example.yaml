@@ -1,0 +1,72 @@
+server:
+  listen: ":9090"
+
+common:
+  interval: 30s
+  timeout: 10s
+  user_agent: statuspage-exporter/0.1
+
+pages:
+  # Atlassian Statuspage examples (MongoDB, Twilio, Datadog, CloudAMQP, many others)
+  - name: mongodb-atlas
+    type: statuspage
+    url: https://status.cloud.mongodb.com
+    user_friendly_url: https://status.cloud.mongodb.com
+
+  - name: twilio
+    type: statuspage
+    url: https://status.twilio.com
+    user_friendly_url: https://status.twilio.com
+
+  - name: datadog
+    type: statuspage
+    url: https://status.datadoghq.com
+    user_friendly_url: https://status.datadoghq.com
+
+  - name: cloudamqp
+    type: statuspage
+    url: https://status.cloudamqp.com
+    user_friendly_url: https://status.cloudamqp.com
+
+  # Instatus example (Fluig Identity or any *.instatus.com page)
+  - name: fluig-identity
+    type: instatus
+    url: https://status.fluigidentity.com/
+    user_friendly_url: https://status.fluigidentity.com/
+
+  # Status.io: provide the page's Public Status API endpoint URL
+  - name: example-statusio
+    type: statusio
+    url: https://status.status.io/  # replace with your public status API endpoint
+    user_friendly_url: https://status.status.io/
+
+  # Azure DevOps official Health API
+  - name: azure-devops
+    type: azuredevops
+    url: https://status.dev.azure.com/_apis/status/health?api-version=7.1-preview.1
+    user_friendly_url: https://status.dev.azure.com
+
+  # Google Cloud incidents JSON
+  - name: google-cloud
+    type: gcp
+    url: https://status.cloud.google.com/incidents.json
+    user_friendly_url: https://status.cloud.google.com
+
+  # AWS via RSS feeds (configure feeds per service/region)
+  - name: aws
+    type: aws_rss
+    feeds:
+      - url: https://status.aws.amazon.com/rss/cloudfront.rss
+        service: CloudFront
+        region: global
+      - url: https://status.aws.amazon.com/rss/route53.rss
+        service: Route53
+        region: global
+    user_friendly_url: https://status.aws.amazon.com
+
+  # Better Stack (requires API token and status page id)
+  - name: my-betterstack
+    type: betterstack
+    page_id: YOUR_STATUS_PAGE_ID
+    api_token: YOUR_BETTERSTACK_TOKEN
+    user_friendly_url: https://status.example.com
