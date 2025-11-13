@@ -1,2 +1,9 @@
 statuspage-exporter
 .gocache
+.gocache
+output/
+dist/
+*.DS_Store
+*.log
+.idea/
+.vscode/

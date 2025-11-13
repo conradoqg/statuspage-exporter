@@ -1,0 +1,12 @@
+.git
+.gocache
+output
+dist
+tmp
+**/*.swp
+**/*.swo
+.vscode
+.idea
+**/*.test
+**/.DS_Store
+

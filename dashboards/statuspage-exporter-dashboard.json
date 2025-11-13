@@ -1,0 +1,69 @@
+{
+  "title": "Statuspage Exporter",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "tags": ["status", "exporter"],
+  "time": {"from": "now-6h", "to": "now"},
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Scrape Success",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {"expr": "avg by(page,provider) (statuspage_scrape_success)", "refId": "A"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "short"}}
+    },
+    {
+      "type": "table",
+      "title": "Pages",
+      "gridPos": {"x": 6, "y": 0, "w": 18, "h": 8},
+      "targets": [
+        {"expr": "statuspage_page_info", "refId": "A"}
+      ],
+      "transformations": [
+        {"id": "labelsToFields"},
+        {"id": "filterFieldsByName", "options": {"include": {"names": ["page","provider","url"]}}}
+      ],
+      "options": {
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {"id": "byName", "options": "url"},
+            "properties": [
+              {"id": "links", "value": [
+                {"title": "Open", "url": "${__cell}"}
+              ]}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "table",
+      "title": "Components",
+      "gridPos": {"x": 0, "y": 8, "w": 24, "h": 16},
+      "targets": [
+        {"expr": "statuspage_component_status_code", "refId": "A"}
+      ],
+      "transformations": [
+        {"id": "labelsToFields"},
+        {"id": "filterFieldsByName", "options": {"include": {"names": ["page","provider","group","component","region","status","Value"]}}}
+      ],
+      "options": {"showHeader": true}
+    },
+    {
+      "type": "timeseries",
+      "title": "Open Incidents",
+      "gridPos": {"x": 0, "y": 24, "w": 24, "h": 8},
+      "targets": [
+        {"expr": "statuspage_open_incidents", "refId": "A"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "short"}}
+    }
+  ]
+}
+

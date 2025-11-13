@@ -83,3 +83,16 @@ Common pages you can try:
 - Some vendors do not publish a canonical unauthenticated status summary (e.g., AWS). For those, RSS or authenticated APIs are used.
 - Google Cloud incidents JSON reflects active and historical incidents, not a permanent per-product status ledger. We only emit impacted components when incidents are open.
 - Better Stack requires an API token for programmatic access.
+## Containers
+
+- Build: `make docker-build`
+- Run: `make docker-run`
+
+## Kubernetes
+
+- Apply manifests (namespace `statuspage`): `kubectl apply -f k8s/statuspage-exporter.yaml -n statuspage`
+- ServiceMonitor assumes Prometheus Operator label `release=prometheus`.
+
+## Grafana Dashboard
+
+- Import dashboards/statuspage-exporter-dashboard.json into Grafana.
