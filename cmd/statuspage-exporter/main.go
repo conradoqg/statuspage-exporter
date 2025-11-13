@@ -12,15 +12,18 @@ import (
 
     "github.com/conradoqg/statuspage-exporter/internal/collector"
     "github.com/conradoqg/statuspage-exporter/internal/config"
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
 func main() {
     var (
         configPath    string
         listenAddress string
+        logLevel     string
     )
     flag.StringVar(&configPath, "config", "config.yaml", "Path to config YAML")
     flag.StringVar(&listenAddress, "listen", ":8080", "Listen address for metrics server")
+    flag.StringVar(&logLevel, "log-level", "", "Log level: debug|info|warn|error (overrides config)")
     flag.Parse()
 
     cfg, err := config.Load(configPath)
@@ -33,6 +36,12 @@ func main() {
     if listenAddress != "" {
         cfg.Server.Listen = listenAddress
     }
+    // Configure logging
+    if logLevel != "" {
+        cfg.Common.LogLevel = logLevel
+    }
+    logx.SetLevelFromString(cfg.Common.LogLevel)
+    logx.Infof("log level set to %s", cfg.Common.LogLevel)
 
     reg := prometheus.NewRegistry()
 
@@ -55,9 +64,8 @@ func main() {
         IdleTimeout:  60 * time.Second,
     }
 
-    log.Printf("statuspage-exporter listening on %s", cfg.Server.Listen)
+    logx.Infof("statuspage-exporter listening on %s", cfg.Server.Listen)
     if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-        log.Fatalf("server error: %v", err)
+        logx.Errorf("server error: %v", err)
     }
 }
-

@@ -7,6 +7,8 @@ import (
     "net/http"
     "strings"
     "time"
+
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
 // AWS public Service Health Dashboard does not provide an unauthenticated JSON summary.
@@ -52,6 +54,7 @@ type rss struct {
 func (p *AWSRSSProvider) Fetch(ctx context.Context) (Result, error) {
     out := Result{Provider: "aws_rss", Page: p.name}
     for _, f := range p.feeds {
+        logx.Debugf("aws_rss fetch feed=%s", f.URL)
         req, _ := http.NewRequestWithContext(ctx, http.MethodGet, f.URL, nil)
         res, err := p.client.Do(req)
         if err != nil {
@@ -74,6 +77,7 @@ func (p *AWSRSSProvider) Fetch(ctx context.Context) (Result, error) {
             Status: st,
         })
     }
+    logx.Debugf("aws_rss parsed components=%d page=%s", len(out.Components), p.name)
     return out, nil
 }
 
@@ -94,4 +98,3 @@ func inferAWSStatus(r rss) NormalizedStatus {
     }
     return StatusUnknown
 }
-

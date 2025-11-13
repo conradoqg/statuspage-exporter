@@ -7,6 +7,8 @@ import (
     "net/http"
     "net/url"
     "time"
+
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
 // Azure DevOps has a public Health API endpoint per docs.
@@ -51,6 +53,7 @@ type azHealth struct {
 }
 
 func (p *AzureDevOpsProvider) Fetch(ctx context.Context) (Result, error) {
+    logx.Debugf("azuredevops fetch url=%s", p.apiURL)
     req, _ := http.NewRequestWithContext(ctx, http.MethodGet, p.apiURL, nil)
     res, err := p.client.Do(req)
     if err != nil {
@@ -72,6 +75,7 @@ func (p *AzureDevOpsProvider) Fetch(ctx context.Context) (Result, error) {
             Status: mapAzureDevOps(s.Status),
         })
     }
+    logx.Debugf("azuredevops parsed components=%d page=%s", len(out.Components), p.name)
     return out, nil
 }
 

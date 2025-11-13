@@ -7,6 +7,8 @@ import (
     "net/http"
     "strings"
     "time"
+
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
 type StatuspageProvider struct {
@@ -44,6 +46,7 @@ type spSummary struct {
 }
 
 func (p *StatuspageProvider) Fetch(ctx context.Context) (Result, error) {
+    logx.Debugf("statuspage fetch base=%s", p.baseURL)
     req, _ := http.NewRequestWithContext(ctx, http.MethodGet, p.baseURL+"/api/v2/summary.json", nil)
     res, err := p.client.Do(req)
     if err != nil {
@@ -76,6 +79,7 @@ func (p *StatuspageProvider) Fetch(ctx context.Context) (Result, error) {
             Status: mapStatuspage(c.Status),
         })
     }
+    logx.Debugf("statuspage parsed components=%d page=%s", len(out.Components), p.name)
     return out, nil
 }
 

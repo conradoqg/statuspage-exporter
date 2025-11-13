@@ -2,26 +2,28 @@ package providers
 
 import (
     "context"
-    "encoding/json"
+    "encoding/xml"
     "fmt"
     "net/http"
+    "strings"
     "time"
+
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
-// Status.io requires the per-page Public Status API endpoint (unique URL).
-// Example response shape documented by status.io KB.
+// Status.io provider via RSS feed
 type StatusIOProvider struct {
     name     string
-    apiURL   string
+    rssURL   string
     interval time.Duration
     timeout  time.Duration
     client   *http.Client
 }
 
-func NewStatusIO(name, apiURL string, interval, timeout time.Duration) *StatusIOProvider {
+func NewStatusIO(name, rssURL string, interval, timeout time.Duration) *StatusIOProvider {
     return &StatusIOProvider{
         name:     name,
-        apiURL:   apiURL,
+        rssURL:   rssURL,
         interval: interval,
         timeout:  timeout,
         client:   NewHTTPClient(timeout),
@@ -31,19 +33,18 @@ func NewStatusIO(name, apiURL string, interval, timeout time.Duration) *StatusIO
 func (p *StatusIOProvider) Interval() time.Duration { return p.interval }
 func (p *StatusIOProvider) Timeout() time.Duration  { return p.timeout }
 
-// Minimal subset of fields we need
-type statusioResp struct {
-    Result struct {
-        Status []struct {
-            Name       string `json:"name"`
-            Status     string `json:"status"`
-            StatusCode int    `json:"status_code"`
-        } `json:"status"`
-    } `json:"result"`
+type statusioRSS struct {
+    Channel struct {
+        Item []struct {
+            Title       string `xml:"title"`
+            Description string `xml:"description"`
+        } `xml:"item"`
+    } `xml:"channel"`
 }
 
 func (p *StatusIOProvider) Fetch(ctx context.Context) (Result, error) {
-    req, _ := http.NewRequestWithContext(ctx, http.MethodGet, p.apiURL, nil)
+    logx.Debugf("statusio(rss) fetch url=%s", p.rssURL)
+    req, _ := http.NewRequestWithContext(ctx, http.MethodGet, p.rssURL, nil)
     res, err := p.client.Do(req)
     if err != nil {
         return Result{Provider: "statusio", Page: p.name}, err
@@ -52,36 +53,38 @@ func (p *StatusIOProvider) Fetch(ctx context.Context) (Result, error) {
     if res.StatusCode != http.StatusOK {
         return Result{Provider: "statusio", Page: p.name}, fmt.Errorf("unexpected status: %s", res.Status)
     }
-    var r statusioResp
-    if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-        return Result{Provider: "statusio", Page: p.name}, err
+    var feed statusioRSS
+    if err := xml.NewDecoder(res.Body).Decode(&feed); err != nil {
+        return Result{Provider: "statusio_rss", Page: p.name}, err
     }
-    out := Result{Provider: "statusio", Page: p.name}
-    for _, s := range r.Result.Status {
+    out := Result{Provider: "statusio_rss", Page: p.name}
+    // Map latest item to a page-level status using heuristics
+    if len(feed.Channel.Item) > 0 {
+        latest := feed.Channel.Item[0]
+        st := inferStatusIOFromText(latest.Title + " " + latest.Description)
         out.Components = append(out.Components, Component{
-            Name:   s.Name,
-            Status: mapStatusIOCode(s.StatusCode),
+            Name:   "",
+            Status: st,
         })
     }
+    logx.Debugf("statusio(rss) items=%d page=%s", len(feed.Channel.Item), p.name)
     return out, nil
 }
 
-// Status.io status codes reference: 100 operational, 200 maintenance, 300 degraded performance,
-// 400 partial service disruption, 500 service disruption, 600 security event
-func mapStatusIOCode(code int) NormalizedStatus {
-    switch code {
-    case 100:
-        return StatusOperational
-    case 200:
-        return StatusUnderMaintenance
-    case 300:
-        return StatusDegraded
-    case 400:
-        return StatusPartialOutage
-    case 500, 600:
+func inferStatusIOFromText(s string) NormalizedStatus {
+    t := strings.ToLower(s)
+    // Order matters: check strongest signals first
+    if strings.Contains(t, "major outage") || strings.Contains(t, "service disruption") || strings.Contains(t, "outage") || strings.Contains(t, "unavailable") || strings.Contains(t, "down") {
         return StatusMajorOutage
-    default:
-        return StatusUnknown
     }
+    if strings.Contains(t, "maintenance") || strings.Contains(t, "under maintenance") {
+        return StatusUnderMaintenance
+    }
+    if strings.Contains(t, "partial") || strings.Contains(t, "some users") || strings.Contains(t, "degraded") || strings.Contains(t, "increased errors") {
+        return StatusPartialOutage
+    }
+    if strings.Contains(t, "operational") || strings.Contains(t, "resolved") || strings.Contains(t, "restored") || strings.Contains(t, "back to normal") {
+        return StatusOperational
+    }
+    return StatusUnknown
 }
-

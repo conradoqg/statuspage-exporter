@@ -10,6 +10,7 @@ import (
 
     "github.com/conradoqg/statuspage-exporter/internal/config"
     "github.com/conradoqg/statuspage-exporter/internal/providers"
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
 type Exporter struct {
@@ -84,6 +85,7 @@ func New(cfg *config.Config) (*Exporter, error) {
     for i, p := range e.providers {
         ce := &cacheEntry{}
         e.caches[i] = ce
+        logx.Infof("starting provider loop: provider=%T page=%d", p, i)
         go e.refreshLoop(p, ce)
     }
     return e, nil
@@ -170,6 +172,7 @@ func (e *Exporter) refreshLoop(p providers.Provider, ce *cacheEntry) {
     for {
         start := time.Now()
         ctx, cancel := context.WithTimeout(context.Background(), p.Timeout())
+        logx.Debugf("fetching from provider interval=%s timeout=%s", p.Interval(), p.Timeout())
         res, err := p.Fetch(ctx)
         cancel()
         ce.mu.Lock()
@@ -178,6 +181,11 @@ func (e *Exporter) refreshLoop(p providers.Provider, ce *cacheEntry) {
         ce.dur = time.Since(start).Seconds()
         ce.updated = time.Now()
         ce.mu.Unlock()
+        if err != nil {
+            logx.Warnf("fetch error provider=%s page=%s err=%v", res.Provider, res.Page, err)
+        } else {
+            logx.Debugf("fetched provider=%s page=%s components=%d incidents=%d dur=%.3fs", res.Provider, res.Page, len(res.Components), res.OpenIncidents, ce.dur)
+        }
         time.Sleep(p.Interval())
     }
 }
@@ -224,9 +232,9 @@ func buildProviders(cfg *config.Config) ([]providers.Provider, []pageMeta, error
         case "instatus":
             ps = append(ps, providers.NewInstatus(p.Name, p.URL, interval, timeout))
             metas = append(metas, pageMeta{Provider: "instatus", Page: p.Name, URL: friendly})
-        case "statusio":
+        case "statusio_rss":
             ps = append(ps, providers.NewStatusIO(p.Name, p.URL, interval, timeout))
-            metas = append(metas, pageMeta{Provider: "statusio", Page: p.Name, URL: friendly})
+            metas = append(metas, pageMeta{Provider: "statusio_rss", Page: p.Name, URL: friendly})
         case "azuredevops":
             ps = append(ps, providers.NewAzureDevOps(p.Name, p.URL, interval, timeout))
             metas = append(metas, pageMeta{Provider: "azuredevops", Page: p.Name, URL: friendly})

@@ -19,12 +19,14 @@ type Common struct {
     Interval time.Duration `yaml:"interval"`
     // Optional HTTP user agent
     UserAgent string `yaml:"user_agent"`
+    // Log level: debug|info|warn|error
+    LogLevel string `yaml:"log_level"`
 }
 
 type Page struct {
     // A short name you choose for this target
     Name string `yaml:"name"`
-    // Provider type: statuspage|instatus|statusio|azuredevops|gcp|aws_rss|betterstack
+    // Provider type: statuspage|instatus|statusio_rss|azuredevops|gcp|aws_rss|betterstack
     Type string `yaml:"type"`
 
     // Base URL or API endpoint depending on provider

@@ -5,6 +5,7 @@ common:
   interval: 30s
   timeout: 10s
   user_agent: statuspage-exporter/0.1
+  log_level: info
 
 pages:
   # Atlassian Statuspage examples (MongoDB, Twilio, Datadog, CloudAMQP, many others)
@@ -36,9 +37,10 @@ pages:
 
   # Status.io: provide the page's Public Status API endpoint URL
   - name: example-statusio
-    type: statusio
-    url: https://status.status.io/  # replace with your public status API endpoint
-    user_friendly_url: https://status.status.io/
+    type: statusio_rss
+    # Use the page RSS feed for Status.io
+    url: https://status.status.io/pages/51f6f2088643809b7200000d/rss
+    user_friendly_url: https://status.status.io
 
   # Azure DevOps official Health API
   - name: azure-devops

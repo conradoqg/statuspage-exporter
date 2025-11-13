@@ -7,6 +7,8 @@ import (
     "net/http"
     "strings"
     "time"
+
+    "github.com/conradoqg/statuspage-exporter/internal/logx"
 )
 
 // Instatus pages expose components at /v2/components.json (preferred) and legacy /summary.json
@@ -46,6 +48,7 @@ type instatusV2 struct {
 
 func (p *InstatusProvider) Fetch(ctx context.Context) (Result, error) {
     // Try v2 first
+    logx.Debugf("instatus fetch base=%s", p.baseURL)
     req, _ := http.NewRequestWithContext(ctx, http.MethodGet, p.baseURL+"/v2/components.json", nil)
     res, err := p.client.Do(req)
     if err != nil {
@@ -71,6 +74,7 @@ func (p *InstatusProvider) Fetch(ctx context.Context) (Result, error) {
             Status: mapInstatus(c.Status),
         })
     }
+    logx.Debugf("instatus parsed components=%d page=%s", len(out.Components), p.name)
     return out, nil
 }
 
@@ -103,6 +107,7 @@ func (p *InstatusProvider) fetchLegacy(ctx context.Context) (Result, error) {
             })
         }
     }
+    logx.Debugf("instatus(legacy) parsed components=%d page=%s", len(out.Components), p.name)
     return out, nil
 }
 
@@ -122,4 +127,3 @@ func mapInstatus(s string) NormalizedStatus {
         return StatusUnknown
     }
 }
-

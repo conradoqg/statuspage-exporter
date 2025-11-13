@@ -1,69 +1,488 @@
 {
-  "title": "Statuspage Exporter",
-  "schemaVersion": 39,
-  "version": 1,
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "editable": true,
-  "tags": ["status", "exporter"],
-  "time": {"from": "now-6h", "to": "now"},
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 5027,
+  "links": [],
   "panels": [
     {
-      "type": "stat",
-      "title": "Scrape Success",
-      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
-      "targets": [
-        {"expr": "avg by(page,provider) (statuspage_scrape_success)", "refId": "A"}
-      ],
-      "fieldConfig": {"defaults": {"unit": "short"}}
-    },
-    {
-      "type": "table",
-      "title": "Pages",
-      "gridPos": {"x": 6, "y": 0, "w": 18, "h": 8},
-      "targets": [
-        {"expr": "statuspage_page_info", "refId": "A"}
-      ],
-      "transformations": [
-        {"id": "labelsToFields"},
-        {"id": "filterFieldsByName", "options": {"include": {"names": ["page","provider","url"]}}}
-      ],
-      "options": {
-        "showHeader": true
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 0,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(statuspage_scrape_success) by (page)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "New panel",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 9,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(statuspage_open_incidents) by (page)",
+          "legendFormat": "{{page}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Open Incidents",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
         "overrides": [
           {
-            "matcher": {"id": "byName", "options": "url"},
+            "matcher": {
+              "id": "byName",
+              "options": "url"
+            },
             "properties": [
-              {"id": "links", "value": [
-                {"title": "Open", "url": "${__cell}"}
-              ]}
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open",
+                    "url": "${__cell}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "page"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 158
+              }
             ]
           }
         ]
-      }
-    },
-    {
-      "type": "table",
-      "title": "Components",
-      "gridPos": {"x": 0, "y": 8, "w": 24, "h": 16},
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 1,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
-        {"expr": "statuspage_component_status_code", "refId": "A"}
+        {
+          "editorMode": "code",
+          "expr": "sum(statuspage_page_info) by (page,url)",
+          "range": true,
+          "refId": "A"
+        }
       ],
+      "title": "Pages",
       "transformations": [
-        {"id": "labelsToFields"},
-        {"id": "filterFieldsByName", "options": {"include": {"names": ["page","provider","group","component","region","status","Value"]}}}
+        {
+          "id": "timeSeriesTable",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Trend #A": true,
+              "__name__": true,
+              "container": true,
+              "endpoint": true,
+              "env": true,
+              "instance": true,
+              "job": true,
+              "k8s_cluster": true,
+              "namespace": true,
+              "pod": true,
+              "prometheus": true,
+              "provider": true,
+              "receive": true,
+              "service": true,
+              "tenant_id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
       ],
-      "options": {"showHeader": true}
+      "type": "table"
     },
     {
-      "type": "timeseries",
-      "title": "Open Incidents",
-      "gridPos": {"x": 0, "y": 24, "w": 24, "h": 8},
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "status"
+          }
+        ]
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
-        {"expr": "statuspage_open_incidents", "refId": "A"}
+        {
+          "editorMode": "code",
+          "expr": "sum(statuspage_component_status_code) by (page, group, component, status, region)",
+          "range": true,
+          "refId": "A"
+        }
       ],
-      "fieldConfig": {"defaults": {"unit": "short"}}
+      "title": "Components",
+      "transformations": [
+        {
+          "id": "timeSeriesTable",
+          "options": {
+            "A": {
+              "timeField": "Time"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "__name__": true,
+              "container": true,
+              "endpoint": true,
+              "env": true,
+              "instance": true,
+              "job": true,
+              "k8s_cluster": true,
+              "namespace": true,
+              "pod": true,
+              "prometheus": true,
+              "provider": true,
+              "receive": true,
+              "service": true,
+              "tenant_id": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Trend #A": 19,
+              "__name__": 0,
+              "component": 3,
+              "container": 4,
+              "endpoint": 5,
+              "env": 6,
+              "group": 2,
+              "instance": 7,
+              "job": 8,
+              "k8s_cluster": 9,
+              "namespace": 10,
+              "page": 1,
+              "pod": 11,
+              "prometheus": 12,
+              "provider": 13,
+              "receive": 14,
+              "region": 18,
+              "service": 15,
+              "status": 16,
+              "tenant_id": 17
+            },
+            "renameByName": {
+              "Trend #A": "Events"
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
-  ]
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 41,
+  "tags": [
+    "status",
+    "exporter"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "StatusPages",
+  "uid": "26aed7ff-3cfe-4498-ba10-8efce356dd86",
+  "version": 6
 }
-

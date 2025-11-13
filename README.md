@@ -29,7 +29,7 @@ See `config.example.yaml` for a full example. Key fields:
 - `common.interval`: default scrape interval
 - `common.timeout`: default HTTP timeout
 - `pages`: list of targets
-  - `type`: one of `statuspage|instatus|statusio|azuredevops|gcp|aws_rss|betterstack`
+  - `type`: one of `statuspage|instatus|statusio_rss|azuredevops|gcp|aws_rss|betterstack`
   - `url`: base URL or provider-specific endpoint
   - `user_friendly_url`: public status page URL to display in dashboards
   - `api_token` / `page_id`: used by Better Stack
@@ -39,7 +39,7 @@ See `config.example.yaml` for a full example. Key fields:
 
 - Statuspage: Uses `GET <base>/api/v2/summary.json`. Components are exported as-is (groups are skipped).
 - Instatus: Prefers `GET <base>/v2/components.json`, falls back to `GET <base>/summary.json`.
-- Status.io: Provide the page's Public Status API endpoint (unique per page). The response should include `result.status[*].status_code`.
+- Status.io (RSS): Set `type: statusio_rss` and the page RSS feed (e.g., `https://status.status.io/pages/<PAGE_ID>/rss`). We infer a page-level status from the latest item’s title/description.
 - Azure DevOps: Uses `GET https://status.dev.azure.com/_apis/status/health?api-version=7.1-preview.1`.
 - Google Cloud: Uses `GET https://status.cloud.google.com/incidents.json`. Only active incidents emit components; otherwise no components are emitted (no canonical per-product summary endpoint).
 - AWS: Public dashboard offers RSS feeds. Configure the feeds you care about. Latest item content is heuristically mapped to a status.
