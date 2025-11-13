@@ -1,4 +1,5 @@
-IMAGE ?= ghcr.io/$(shell echo $$(git remote get-url origin 2>/dev/null | sed -E 's#.*github.com[:/](.+)\.git#\1#'))/statuspage-exporter:latest
+# Docker image tag (override with `make docker-build IMAGE=repo/statuspage-exporter:tag`)
+IMAGE ?= statuspage-exporter:latest
 BIN   ?= output/statuspage-exporter
 
 .PHONY: build build-linux run test fmt vet docker-build docker-run docker-push clean
@@ -37,4 +38,3 @@ docker-push:
 
 clean:
 	@rm -rf output .gocache
-
