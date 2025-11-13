@@ -7,12 +7,12 @@ BIN   ?= output/statuspage-exporter
 build:
 	@echo "Building $(BIN)..."
 	@mkdir -p output
-	@cd cmd/statuspage-exporter && GOCACHE=$$PWD/../../.gocache go build -o ../../$(BIN) .
+	@GOCACHE=$$PWD/.gocache go build -o $(BIN) ./cmd/statuspage-exporter
 
 build-linux:
 	@echo "Building linux/amd64 binary..."
 	@mkdir -p output
-	@cd cmd/statuspage-exporter && GOCACHE=$$PWD/../../.gocache CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../$(BIN)-linux-amd64 .
+	@GOCACHE=$$PWD/.gocache CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(BIN)-linux-amd64 ./cmd/statuspage-exporter
 
 run: build
 	@./$(BIN) --config=config.yaml --listen=:9090
