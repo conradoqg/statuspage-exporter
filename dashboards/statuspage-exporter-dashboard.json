@@ -293,6 +293,7 @@
             }
           },
           "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -476,5 +477,5 @@
   "timezone": "",
   "title": "StatusPages",
   "uid": "26aed7ff-3cfe-4498-ba10-8efce356dd86",
-  "version": 10
+  "version": 11
 }
