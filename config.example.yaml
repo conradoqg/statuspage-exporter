@@ -55,6 +55,12 @@ pages:
     url: https://status.cloud.google.com/incidents.json
     user_friendly_url: https://status.cloud.google.com
 
+  # Cloudflare status page (supports both summary.json and incidents.json)
+  - name: cloudflare
+    type: cloudflare
+    url: https://www.cloudflarestatus.com
+    user_friendly_url: https://www.cloudflarestatus.com
+
   # AWS via RSS feeds (configure feeds per service/region)
   - name: aws
     type: aws_rss

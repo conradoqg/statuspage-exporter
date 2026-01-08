@@ -11,6 +11,7 @@ Supported providers:
 - Google Cloud — incidents JSON (inferred current impacts)
 - AWS — RSS feeds (per-service/region)
 - Better Stack — REST API with token + status page ID
+- Cloudflare — Uses summary or incidents JSON
 
 ## Build and run
 
@@ -30,7 +31,7 @@ See `config.example.yaml` for a full example. Key fields:
 - `common.timeout`: default HTTP timeout
 - `common.unknown_is_up`: if true, unknown status maps to up=1 (default true)
 - `pages`: list of targets
-  - `type`: one of `statuspage|instatus|statusio_rss|azuredevops|gcp|aws_rss|betterstack`
+  - `type`: one of `statuspage|instatus|statusio_rss|azuredevops|gcp|aws_rss|betterstack|cloudflare`
   - `url`: base URL or provider-specific endpoint
   - `user_friendly_url`: public status page URL to display in dashboards
   - `api_token` / `page_id`: used by Better Stack
@@ -45,6 +46,7 @@ See `config.example.yaml` for a full example. Key fields:
 - Google Cloud: Uses `GET https://status.cloud.google.com/incidents.json`. Only active incidents emit components; otherwise no components are emitted (no canonical per-product summary endpoint).
 - AWS: Public dashboard offers RSS feeds. Configure the feeds you care about. Latest item content is heuristically mapped to a status.
 - Better Stack: Requires token and status page ID. Resources are fetched from `GET /api/v2/status-pages/{page_id}/resources`.
+- Cloudflare: Defaults to `https://www.cloudflarestatus.com/api/v2/summary.json`. Supports both statuspage-like summaries and incident-only JSON responses.
 
 ## Metrics
 
@@ -66,6 +68,7 @@ See `config.example.yaml` for a full example. Key fields:
 - Google Cloud incidents JSON: `https://status.cloud.google.com/incidents.json`
 - AWS Service Health RSS: per-service/region feeds under `https://status.aws.amazon.com/rss/`
 - Better Stack Uptime API: `https://uptime.betterstack.com/api/v2/` (requires token)
+- Cloudflare: `/api/v2/summary.json` default, or custom incident endpoints.
 
 ## Example targets
 
@@ -79,6 +82,7 @@ Common pages you can try:
 - Azure DevOps: https://status.dev.azure.com/_apis/status/health?api-version=7.1-preview.1
 - Google Cloud: https://status.cloud.google.com/incidents.json
 - AWS RSS examples: https://status.aws.amazon.com/rss/cloudfront.rss, https://status.aws.amazon.com/rss/ec2-ap-southeast-1.rss
+- Cloudflare: https://www.cloudflarestatus.com.
 
 ## Caveats
 
