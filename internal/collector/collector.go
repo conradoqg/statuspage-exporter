@@ -253,6 +253,9 @@ func buildProviders(cfg *config.Config) ([]providers.Provider, []pageMeta, error
 		case "betterstack":
 			ps = append(ps, providers.NewBetterStack(p.Name, p.PageID, p.APIToken, interval, timeout))
 			metas = append(metas, pageMeta{Provider: "betterstack", Page: p.Name, URL: friendly})
+		case "cloudflare":
+			ps = append(ps, providers.NewCloudflare(p.Name, p.URL, interval, timeout))
+			metas = append(metas, pageMeta{Provider: "cloudflare", Page: p.Name, URL: friendly})
 		default:
 			return nil, nil, fmt.Errorf("unknown provider type: %s", p.Type)
 		}

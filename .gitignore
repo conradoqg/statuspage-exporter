@@ -4,4 +4,8 @@ dist/
 *.DS_Store
 *.log
 .idea/
-.vscode/
+config.yaml
+statuspage-exporter
+statuspage-exporter.exe
+/statuspage-exporter
+/statuspage-exporter.exe
